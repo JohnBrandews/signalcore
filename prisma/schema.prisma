@@ -1,0 +1,88 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url       = env("DATABASE_URL")
+}
+
+model Release {
+  id                    String            @id @default(cuid())
+  externalId            String            @unique
+  indicator             String
+  releasedAt            DateTime
+  actual                Float?
+  forecast              Float?
+  previous              Float?
+  unit                  String
+  period                String
+  policySignal          String?
+  expectedPolicySignal  String?
+  source                String
+  createdAt             DateTime          @default(now())
+  updatedAt             DateTime          @updatedAt
+  reactions             ReleaseReaction[]
+
+  @@index([indicator, releasedAt])
+}
+
+model PriceBar {
+  id        String   @id @default(cuid())
+  symbol    String
+  date      DateTime
+  close     Float
+  source    String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([symbol, date])
+  @@index([symbol, date])
+}
+
+model ReleaseReaction {
+  id          String   @id @default(cuid())
+  releaseId   String
+  symbol      String
+  measure     String
+  change      Float
+  priorDate   DateTime
+  releaseDate DateTime
+  createdAt   DateTime @default(now())
+  release     Release  @relation(fields: [releaseId], references: [id], onDelete: Cascade)
+
+  @@unique([releaseId, symbol])
+}
+
+model BiasSnapshot {
+  id           String   @id @default(cuid())
+  asOf         DateTime
+  instrument   String
+  score        Float
+  direction    String
+  strength     Float
+  confidence   Float
+  // JSON serialized as text for SQLite portability; use Json on PostgreSQL.
+  drivers      String
+  releaseIds   String   @default("[]")
+  rulesVersion String
+  origin       String
+  computedAt   DateTime @default(now())
+
+  @@unique([asOf, instrument, rulesVersion, origin])
+  @@index([instrument, origin, asOf])
+}
+
+model PriceSeriesStatus {
+  symbol       String   @id
+  latestDate   DateTime?
+  lagDays      Int?
+  source       String
+  checkedAt    DateTime @updatedAt
+}
+
+
+
+
+
+

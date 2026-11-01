@@ -1,0 +1,12 @@
+import Link from "next/link";
+import { INDICATOR_RULES } from "../../rules";
+import { generateReleaseInterpretation } from "../../lib/analysis/interpretation";
+import { loadAnalysisDataset } from "../../lib/page-data";
+export const dynamic = "force-dynamic";
+export default async function ReleasesPage({ searchParams }: { searchParams: { indicator?: string } }) {
+  const selected = searchParams.indicator && Object.hasOwn(INDICATOR_RULES, searchParams.indicator) ? searchParams.indicator : undefined;
+  const dataset = await loadAnalysisDataset();
+  const releases = selected ? dataset.releases.filter(row => row.indicator === selected) : dataset.releases;
+  const events = new Map(dataset.events.map(event => [event.id, event]));
+  return <main className="mx-auto max-w-6xl px-5 py-8"><h1 className="text-3xl font-semibold">Economic releases</h1><form className="my-5 flex flex-wrap items-center gap-2"><label htmlFor="indicator" className="text-sm">Filter by indicator</label><select id="indicator" name="indicator" defaultValue={selected ?? ""} className="rounded border p-2"><option value="">All indicators</option>{Object.keys(INDICATOR_RULES).map(indicator=><option key={indicator} value={indicator}>{indicator}</option>)}</select><button className="rounded bg-slate-900 px-3 py-2 text-white">Filter</button><Link href="/releases" className="text-sm underline">Clear</Link></form>{releases.length ? <div className="overflow-x-auto rounded-xl border bg-white"><table className="w-full min-w-[42rem] text-left text-sm"><thead className="bg-slate-50"><tr><th className="p-3">Release</th><th className="p-3">Actual</th><th className="p-3">Consensus</th><th className="p-3">Previous</th><th className="p-3">Reading</th></tr></thead><tbody>{releases.map(release=>{const reading=generateReleaseInterpretation(events.get(release.externalId)!);return <tr key={release.id} className="border-t"><td className="p-3"><Link className="font-medium underline" href={`/releases/${encodeURIComponent(release.externalId)}`}>{release.indicator}<span className="block text-xs font-normal text-slate-500">{release.period} · {release.releasedAt.toISOString()}</span></Link></td><td className="p-3">{release.actual ?? "—"} {release.unit}</td><td className="p-3">{release.forecast ?? "—"} {release.unit}</td><td className="p-3">{release.previous ?? "—"} {release.unit}</td><td className="p-3">{reading?.label ?? "No consensus"}</td></tr>;})}</tbody></table></div> : <p className="rounded border bg-white p-5">No matching release data.</p>}</main>;
+}

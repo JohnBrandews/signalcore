@@ -1,0 +1,45 @@
+{
+  "name": "signalcore-phase0",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "test": "npm run build && node dist/tests.js && tsx scripts/tests.ts",
+    "example": "npm run build && node dist/example.js",
+    "typecheck": "tsc -p tsconfig.json --noEmit && tsc -p scripts/tsconfig.json",
+    "backtest": "tsx scripts/backtest.ts",
+    "sample-data": "tsx scripts/make-sample-data.ts",
+    "fetch-fred": "tsx scripts/fetch-fred.ts",
+    "fetch-fred-prices": "tsx scripts/fetch-fred-prices.ts",
+    "prepare-prices": "tsx scripts/prepare-prices.ts",
+    "seed": "tsx scripts/seed.ts",
+    "parity:db": "tsx scripts/parity-check.ts",
+    "backfill-snapshots": "tsx scripts/backfill-snapshots.ts",
+    "db:generate": "prisma generate",
+    "db:migrate": "prisma migrate dev",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "dev": "next dev",
+    "start": "next start",
+    "next:build": "next build"
+  },
+  "dependencies": {
+    "@prisma/client": "^6.19.3",
+    "next": "^14.2.35",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1"
+  },
+  "devDependencies": {
+    "@types/node": "^26.6.4",
+    "@types/react": "^18.3.31",
+    "@types/react-dom": "^18.3.7",
+    "autoprefixer": "^10.6.2",
+    "postcss": "^8.5.32",
+    "prettier": "^3.9.9",
+    "prisma": "^6.19.3",
+    "tailwindcss": "^3.4.19",
+    "tsx": "^4.23.15",
+    "typescript": "^5.7.3"
+  }
+}
+

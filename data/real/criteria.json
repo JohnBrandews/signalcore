@@ -1,0 +1,23 @@
+{
+  "inSampleEnd": "2023-12-31",
+  "targets": {
+    "DXY": {
+      "expectedSpearmanSign": 1,
+      "minimumAbsoluteSpearman": 0.10,
+      "horizonsToCheck": [5, 20],
+      "topBucketMustBeatBottom": true
+    },
+    "REAL10Y": {
+      "expectedSpearmanSign": 1,
+      "minimumAbsoluteSpearman": 0.10,
+      "horizonsToCheck": [5, 20],
+      "topBucketMustBeatBottom": true
+    },
+    "UST10Y": {
+      "expectedSpearmanSign": 1,
+      "minimumAbsoluteSpearman": 0.10,
+      "horizonsToCheck": [5, 20],
+      "topBucketMustBeatBottom": true
+    }
+  }
+}
